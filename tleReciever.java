@@ -27,6 +27,7 @@ public class tleReciever {
 			String authPath = "/auth/login";
 			String userName = prop.getProperty("username");
 			String password = prop.getProperty("password");	 
+			System.out.printf("%s, %s\n" ,userName, password);
 			
 			CookieManager manager = new CookieManager();
 			manager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
@@ -59,10 +60,10 @@ public class tleReciever {
 
 			br = new BufferedReader(new InputStreamReader((url.openStream())));
 			
+
 			while ((output = br.readLine()) != null) {
 				System.out.println(output);
 			}
-
 
 			// Logout of Space-Track.org:
 			url = new URL(baseURL + "/ajaxauth/logout");
