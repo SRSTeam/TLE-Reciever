@@ -9,48 +9,68 @@ payload = {
     'identity': config.get("SpaceTrack","Username"),
     'password': config.get("SpaceTrack","Password")
 }
+class tleData:
+    def __init__(self, jsonData):
+        self.norad_cat_id = jsonData.get("NORAD_CAT_ID")
+        self.json = jsonData
+    def get(self, arg):
+        return self.json.get(arg)
+
+class satcatData:
+    def __init__(self, jsonData):
+        self.norad_cat_id = jsonData.get("NORAD_CAT_ID")
+        self.json = jsonData
+    def get(self, arg):
+        return self.json.get(arg)
 
 class Satellite:
-    def __init__(self, jsonData):
-        self.json = jsonData
-        self.id = jsonData.get("NORAD_CAT_ID")
-        self.name = jsonData.get("OBJECT_NAME")
-        self.perigee = float(jsonData.get("PERIGEE"))
-        self.apogee = float(jsonData.get("APOGEE"))
-        self.object_type = jsonData.get("OBJECT_TYPE")
-        self.rcs_size = jsonData.get("RCS_SIZE")
-        # self.decay = jsonData.get("DECAY")
+    def __init__(self, satcatData, tleData):
+        self.satcatData = satcatData
+        self.tleData = tleData
+        self.id = satcatData.get("NORAD_CAT_ID")
+        self.name = satcatData.get("OBJECT_NAME")
+        self.perigee = float(tleData.get("PERIGEE"))
+        self.apogee = float(tleData.get("APOGEE"))
+        self.object_type = satcatData.get("OBJECT_TYPE")
     def __str__(self):
         output = "NORAD Catalog ID:\t" + self.id + "\n"
         output += "Satellite Name:\t" + self.name + "\n"
         output += "Object Type:\t" + self.object_type + "\n"
-        if self.rcs_size != None:
-            output += "RCS Size:\t" + str(self.rcs_size) + "\n"
         output += "Perigee:\t" + str(self.perigee) + " km\n"
         output += "Perigee:\t" + str(self.perigee*0.621371192) + "mi\n"
         output += "Apogee:\t" + str(self.apogee) + " km\n"
         output += "Apogee:\t" + str(self.apogee*0.621371192) + "mi\n"
-        # output += "Decay:\t" + self.decay
+        output += "Size:\t" + self.satcatData.get("RCS_SIZE")
         return output
 
 data = None
 with session() as c:
     c.post('https://www.space-track.org/ajaxauth/login', data=payload)
-    # response = c.get('https://www.space-track.org/basicspacedata/query/class/decay/DECAY_EPOCH/%3Enow/orderby/DECAY_EPOCH%20asc/metadata/false') # RCS_SIZE/%3C%3ESMALL/
-    # data = json.loads(response.text)
-    # decayCatalogIDs = []
-    # for line in data:
-    #     if(not line.get("OBJECT_NAME").__contains__("DEB")):
-    #         decayCatalogIDs.append(line.get("NORAD_CAT_ID"))  
-    # catalogQuery = ",".join(decayCatalogIDs)
 
-    response = c.get('https://www.space-track.org/basicspacedata/query/class/satcat/APOGEE/%3C1000/PERIGEE/%3C300/RCS_SIZE/%3C%3ESMALL/OBJECT_TYPE/PAYLOAD/CURRENT/Y/orderby/DECAY%20asc/limit/100/metadata/false')
-    # response = c.get('https://www.space-track.org/basicspacedata/query/class/satcat/CURRENT/Y/PERIGEE/%3C200/NORAD_CAT_ID/'+catalogQuery+'/orderby/PERIGEE%20asc/metadata/false')
-    data = json.loads(response.text)
-    satellites = []
-    for sat in data:
+    # Generates Satcat database of desired satellites
+    satcatJson = json.loads(c.get('https://www.space-track.org/basicspacedata/query/class/satcat/PERIGEE/%3C300/RCS_SIZE/%3C%3ESMALL/OBJECT_TYPE/PAYLOAD/CURRENT/Y/orderby/DECAY%20asc/limit/100/metadata/false').text)
+    satcatMap = {}
+    for sat in satcatJson:
         if(sat.get("DECAY") == None):
-            satellites.append(Satellite(sat))
-            print satellites[-1]
-            print
-    # print satellites[-1].json
+            satcatMap[sat.get('NORAD_CAT_ID')] = satcatData(sat)
+
+    # Generates TLE database of desired satellites
+    tleJson = json.loads(c.get('https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/EPOCH/>now-30/MEAN_MOTION/>11.25/ECCENTRICITY/<0.25/OBJECT_TYPE/payload/orderby/NORAD_CAT_ID/format/json').text)
+    tleMap = {}
+    for t in tleJson:
+        tleMap[t.get("NORAD_CAT_ID")] = tleData(t)
+
+    # Combines TLE and Satcat databases into satellite class
+    satellites = []
+    for sat in satcatMap:
+        if sat in tleMap:
+            satellites.append(Satellite(satcatMap[sat],tleMap[sat]))
+
+    # Sorts satellites by perigee
+    satellites = sorted(satellites, key=lambda x:x.perigee)
+    for sat in satellites:
+        print sat
+        print
+
+    # Logout
+    c.post('https://www.space-track.org/ajaxauth/logout')

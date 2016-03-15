@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"json",
+				"jsonData"
+			],
+			[
+				"jso",
+				"jsonData"
+			],
+			[
+				"File",
+				"FileInputStream"
+			],
+			[
 				"tex",
 				"text_custom"
 			]
@@ -11,6 +23,22 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "tleReciever.java",
+			"settings":
+			{
+				"buffer_size": 2195,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "tleReciever.py",
+			"settings":
+			{
+				"buffer_size": 2569,
+				"line_ending": "Windows"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -20,20 +48,28 @@
 	"command_palette":
 	{
 		"height": 600.0,
-		"last_filter": "sideb",
+		"last_filter": "insta",
 		"selected_items":
 		[
-			[
-				"sideb",
-				"Side Bar: Refresh"
-			],
 			[
 				"insta",
 				"Package Control: Install Package"
 			],
 			[
+				"Package Control: rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"add rep",
+				"Package Control: Add Repository"
+			],
+			[
 				"instal",
 				"Package Control: Install Package"
+			],
+			[
+				"sideb",
+				"Side Bar: Refresh"
 			],
 			[
 				"install",
@@ -81,6 +117,10 @@
 	],
 	"file_history":
 	[
+		"/C/Users/Colm Gallagher/Documents/GitHub/SatTracker/.gitignore",
+		"/C/Users/Colm Gallagher/Documents/GitHub/SatTracker/config.properties",
+		"/C/Users/Colm Gallagher/Documents/GitHub/SatTracker/config.ini",
+		"/C/Users/Colm Gallagher/Documents/GitHub/SatTracker/example.config.properties",
 		"/C/Users/Colm Gallagher/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
 		"/C/Users/Colm Gallagher/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/C/Users/Colm Gallagher/Documents/Sattelites/tleReciever.java",
@@ -133,8 +173,69 @@
 	"groups":
 	[
 		{
+			"selected": 1,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "tleReciever.java",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2195,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1628,
+								1628
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Java/Java.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "tleReciever.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2569,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2124,
+								2124
+							]
+						],
+						"settings":
+						{
+							"auto_complete": false,
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 759.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -144,7 +245,7 @@
 	},
 	"input":
 	{
-		"height": 0.0
+		"height": 56.0
 	},
 	"layout":
 	{
@@ -215,7 +316,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 293.0,
+	"side_bar_width": 349.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
