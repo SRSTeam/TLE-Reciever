@@ -1,5 +1,8 @@
 from requests import session
+from sgp4.earth_gravity import wgs72
+from sgp4.io import twoline2rv
 import json, ConfigParser
+from datetime import datetime
 
 config = ConfigParser.ConfigParser()
 config.read("config.ini")
@@ -27,6 +30,7 @@ class Satellite:
     def __init__(self, satcatData, tleData):
         self.satcatData = satcatData
         self.tleData = tleData
+        self.sgp4Data = twoline2rv(tleData.get("TLE_LINE1"),tleData.get("TLE_LINE2"),wgs72)
         self.id = satcatData.get("NORAD_CAT_ID")
         self.name = satcatData.get("OBJECT_NAME")
         self.perigee = float(tleData.get("PERIGEE"))
@@ -42,6 +46,11 @@ class Satellite:
         output += "Apogee:\t" + str(self.apogee*0.621371192) + "mi\n"
         output += "Size:\t" + self.satcatData.get("RCS_SIZE")
         return output
+
+    # Returns the location of the satellite in ECI form
+    def getLoc(self):
+        dt = datetime.now()
+        return self.sgp4Data.propagate(dt.year,dt.month,dt.day,dt.hour,dt.minute,dt.second)[0]
 
 data = None
 with session() as c:
