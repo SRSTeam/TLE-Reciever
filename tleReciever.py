@@ -3,6 +3,7 @@ from sgp4.earth_gravity import wgs72
 from sgp4.io import twoline2rv
 import json, ConfigParser
 from datetime import datetime
+##import sgp4lib
 
 config = ConfigParser.ConfigParser()
 config.read("config.ini")
@@ -39,13 +40,19 @@ class Satellite:
     def __str__(self):
         output = "NORAD Catalog ID:\t" + self.id + "\n"
         output += "Satellite Name:\t" + self.name + "\n"
-        output += "Object Type:\t" + self.object_type + "\n"
+        #output += "Object Type:\t" + self.object_type + "\n"
         output += "Perigee:\t" + str(self.perigee) + " km\n"
         output += "Perigee:\t" + str(self.perigee*0.621371192) + "mi\n"
-        output += "Apogee:\t" + str(self.apogee) + " km\n"
-        output += "Apogee:\t" + str(self.apogee*0.621371192) + "mi\n"
+        #output += "Apogee:\t" + str(self.apogee) + " km\n"
+        #output += "Apogee:\t" + str(self.apogee*0.621371192) + "mi\n"
+        output += "Launch Year:\t" + self.satcatData.get("LAUNCH_YEAR") + "\n"
         output += "Size:\t" + self.satcatData.get("RCS_SIZE")
         return output
+    def printTLE(self):
+        output  = self.tleData.get("TLE_LINE0") + "\n"
+        output += self.tleData.get("TLE_LINE1") + "\n"
+        output += self.tleData.get("TLE_LINE2")
+        print(output)
 
     # Returns the location of the satellite in ECI form
     def getLoc(self):
@@ -78,8 +85,8 @@ with session() as c:
     # Sorts satellites by perigee
     satellites = sorted(satellites, key=lambda x:x.perigee)
     for sat in satellites:
-        print sat
+        print(sat)
         print
-
+        #sat.printTLE()
     # Logout
     c.post('https://www.space-track.org/ajaxauth/logout')
